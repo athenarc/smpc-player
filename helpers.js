@@ -4,6 +4,16 @@ const print = (message) => {
   console.log(`${PREFIX}`, message)
 }
 
+const pack = (msg) => {
+  return JSON.stringify(msg)
+}
+
+const unpack = (msg) => {
+  return JSON.parse(msg)
+}
+
 module.exports = {
-  print
+  print,
+  pack,
+  unpack
 }
