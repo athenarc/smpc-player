@@ -15,15 +15,23 @@ if (_.isEmpty(process.env.ID)) {
   throw new Error('Player ID not defined!')
 }
 
-const wss = new WebSocket.Server({ port: PORT })
-const player = new Player(process.env.ID)
+const wss = new WebSocket.Server({ port: PORT, clientTracking: true })
 
-wss.on('connection', (ws) => {
-  print('Connection Accepted!')
+const handleConnection = (ws) => {
+  const player = new Player(process.env.ID)
+
+  ws.on('close', (data) => {
+    console.log('Connection Closed: ', data)
+  })
+
+  ws.on('error', (err) => {
+    console.log(err)
+  })
 
   ws.on('message', (data) => {
     print(`Message: ${data}`)
     data = unpack(data)
+
     if (data.message === 'start') {
       player.run()
 
@@ -36,4 +44,9 @@ wss.on('connection', (ws) => {
       })
     }
   })
+}
+
+wss.on('connection', (ws) => {
+  print('Connection Accepted!')
+  handleConnection(ws)
 })
