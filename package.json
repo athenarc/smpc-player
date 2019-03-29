@@ -1,0 +1,38 @@
+{
+  "name": "smpc-player",
+  "version": "1.0.0",
+  "description": "Player local driver SMPC framework",
+  "main": "player.js",
+  "scripts": {
+    "start": "nodemon --watch . --watch server.js",
+    "serve": "node server.js",
+    "lint": "standard"
+  },
+  "engines": {
+    "node": ">=8.11.4"
+  },
+  "author": {
+    "name": "Christos Nasikas",
+    "email": "xristosnasikas@gmail.com",
+    "url": "https://christosnasikas.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Athena-MHMD/smpc-player.git"
+  },
+  "homepage": "https://github.com/Athena-MHMD/smpc-player.git",
+  "bugs": "https://github.com/Athena-MHMD/smpc-player.git/issues",
+  "license": "MIT",
+  "standard": {
+    "ignore": []
+  },
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "standard": "^12.0.1",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9",
+    "run.env": "^1.1.0"
+  }
+}
