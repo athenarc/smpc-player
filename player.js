@@ -39,8 +39,12 @@ const handleConnection = (ws) => {
         ws.send(pack({ message: 'listen', player: { id: player.id } }))
       })
 
-      player.on('exit', () => {
-        ws.send(pack({ message: 'exit', player: { id: player.id } }))
+      player.on('error', (msg) => {
+        ws.send(pack({ message: 'error', ...msg }))
+      })
+
+      player.on('exit', (msg) => {
+        ws.send(pack({ message: 'exit', entity: 'player', ...msg }))
       })
     }
   })
