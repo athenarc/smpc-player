@@ -27,7 +27,9 @@ class Player extends EventEmitter {
 
     this.player.on('exit', (code) => {
       console.log(`Player exited with code ${code}`)
-      this.emit('exit', { id: this.id })
+      this.emit('exit', { id: this.id, code, errors: this.errors })
+      this.player.stdin.pause()
+      this.player.kill()
       this.player = null
     })
   }
