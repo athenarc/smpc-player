@@ -13,7 +13,7 @@ const writeFile = util.promisify(fs.writeFile)
 const SCALE = process.env.SMPC_ENGINE
 const PLAYER_CMD = `${SCALE}/Player.x`
 const COMPILE_CMD = `${SCALE}/compile.py`
-const PROGRAMS_PATH = `${SCALE}/Programs`
+const PROGRAMS_PATH = `${SCALE}/Programs/dynamic`
 
 class Player extends EventEmitter {
   constructor (id) {
@@ -22,6 +22,7 @@ class Player extends EventEmitter {
     this.compile = null
     this.id = id
     this.errors = []
+    this.mpc = {}
   }
 
   async _compile (mpc) {
@@ -43,7 +44,8 @@ class Player extends EventEmitter {
       }
     }
 
-    this.compile = spawn(COMPILE_CMD, [`Programs/${mpc.id}`], { cwd: SCALE, shell: true })
+    this.mpc = { ...mpc }
+    this.compile = spawn(COMPILE_CMD, [`${PROGRAMS_PATH}/${mpc.id}`], { cwd: SCALE, shell: true })
 
     this.compile.stdout.on('data', (data) => {})
 
@@ -64,7 +66,7 @@ class Player extends EventEmitter {
   }
 
   run () {
-    this.player = spawn(PLAYER_CMD, [this.id, 'Programs/sedp', '-f 1'], { cwd: SCALE, shell: true })
+    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.mpc.id}`, '-f 1'], { cwd: SCALE, shell: true })
 
     this.player.stdout.on('data', (data) => {
       console.log(data.toString())
