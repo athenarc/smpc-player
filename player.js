@@ -20,6 +20,22 @@ const wss = new WebSocket.Server({ port: PORT, clientTracking: true })
 const handleConnection = (ws) => {
   const player = new Player(process.env.ID)
 
+  player.on('compilation-ended', (msg) => {
+    ws.send(pack({ message: 'compilation-ended', ...msg }))
+  })
+
+  player.on('listen', () => {
+    ws.send(pack({ message: 'listen', player: { id: player.id } }))
+  })
+
+  player.on('error', (msg) => {
+    ws.send(pack({ message: 'error', ...msg }))
+  })
+
+  player.on('exit', (msg) => {
+    ws.send(pack({ message: 'exit', entity: 'player', ...msg }))
+  })
+
   ws.on('close', (data) => {
     console.log('Connection Closed: ', data)
   })
@@ -32,20 +48,12 @@ const handleConnection = (ws) => {
     print(`Message: ${data}`)
     data = unpack(data)
 
+    if (data.message === 'compile') {
+      player.compileProgram({ ...data.mpc })
+    }
+
     if (data.message === 'start') {
       player.run()
-
-      player.on('listen', () => {
-        ws.send(pack({ message: 'listen', player: { id: player.id } }))
-      })
-
-      player.on('error', (msg) => {
-        ws.send(pack({ message: 'error', ...msg }))
-      })
-
-      player.on('exit', (msg) => {
-        ws.send(pack({ message: 'exit', entity: 'player', ...msg }))
-      })
     }
   })
 }

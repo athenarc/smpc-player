@@ -1,17 +1,66 @@
 const { spawn } = require('child_process')
 const EventEmitter = require('events')
+const fs = require('fs')
+const util = require('util')
+const _ = require('lodash')
 
 const { includeError } = require('./helpers')
 
+const readFile = util.promisify(fs.readFile)
+const mkdir = util.promisify(fs.mkdir)
+const writeFile = util.promisify(fs.writeFile)
+
 const SCALE = process.env.SMPC_ENGINE
 const PLAYER_CMD = `${SCALE}/Player.x`
+const COMPILE_CMD = `${SCALE}/compile.py`
+const PROGRAMS_PATH = `${SCALE}/Programs`
 
 class Player extends EventEmitter {
   constructor (id) {
     super()
     this.player = null
+    this.compile = null
     this.id = id
     this.errors = []
+  }
+
+  async _compile (mpc) {
+    await mkdir(`${PROGRAMS_PATH}/${mpc.id}`)
+    let program = await readFile(`./templates/${mpc.name}.mpc.mustache`, 'utf8')
+    let compiled = _.template(program)
+    program = compiled({ dataSize: mpc.dataSize })
+    await writeFile(`${PROGRAMS_PATH}/${mpc.id}/${mpc.id}.mpc`, program)
+  }
+
+  async compileProgram (mpc) {
+    try {
+      await this._compile(mpc)
+    } catch (e) {
+      if (e.code !== 'EEXIST') {
+        console.log(e)
+        this.emit('error', { id: this.id, errors: [e.message] })
+        return
+      }
+    }
+
+    this.compile = spawn(COMPILE_CMD, [`Programs/${mpc.id}`], { cwd: SCALE, shell: true })
+
+    this.compile.stdout.on('data', (data) => {})
+
+    this.compile.stderr.on('data', (data) => {
+      data = data.toString().toLowerCase()
+      console.log(data)
+      this.errors.push(data)
+      this.emit('error', { id: this.id, errors: this.errors })
+    })
+
+    this.compile.on('exit', (code) => {
+      console.log(`Compilation exited with code ${code}`)
+      this.emit('compilation-ended', { id: this.id, code, errors: this.errors })
+      this.compile.stdin.pause()
+      this.compile.kill()
+      this.compile = null
+    })
   }
 
   run () {
@@ -25,6 +74,7 @@ class Player extends EventEmitter {
     })
 
     this.player.stderr.on('data', (data) => {
+      console.log(data.toString())
       data = data.toString().toLowerCase()
       if (includeError(data, ['what()', 'aborted'])) {
         this.errors.push(data)
