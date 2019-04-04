@@ -55,6 +55,10 @@ const handleConnection = (ws) => {
     if (data.message === 'start') {
       player.run()
     }
+
+    if (data.message === 'restart') {
+      player.terminate()
+    }
   })
 }
 
