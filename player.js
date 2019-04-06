@@ -17,6 +17,8 @@ if (!process.env.ID) {
 
 const wss = new WebSocket.Server({ port: PORT, clientTracking: true })
 
+console.log(`Player ${process.env.ID} started on port ${PORT}.`)
+
 const handleConnection = (ws) => {
   const player = new Player(process.env.ID)
 
