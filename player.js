@@ -40,10 +40,12 @@ const handleConnection = (ws) => {
 
   ws.on('close', (data) => {
     console.log('Connection Closed: ', data)
+    player.terminate()
   })
 
   ws.on('error', (err) => {
     console.log(err)
+    player.terminate()
   })
 
   ws.on('message', (data) => {
