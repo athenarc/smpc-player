@@ -71,9 +71,23 @@ class Player extends EventEmitter {
     this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.job.id}`, '-f 1'], { cwd: SCALE, shell: true })
 
     this.player.stdout.on('data', (data) => {
-      console.log(data.toString())
-      if (data.toString().includes('Opening channel 1')) { // better search message. SCALE should print specilized message
+      data = data.toString()
+      console.log(data)
+      if (data.includes('Opening channel 1')) { // better search message. SCALE should print specilized message
         this.emit('listen', { id: this.id })
+      }
+
+      if (data.includes('OUTPUT START')) {
+        this.bufferOutput = true
+      }
+
+      if (this.bufferOutput) {
+        this.output += data
+      }
+
+      if (data.includes('OUTPUT END')) {
+        this.bufferOutput = false
+        this.output += data
       }
     })
 
@@ -88,7 +102,7 @@ class Player extends EventEmitter {
 
     this.player.on('exit', (code) => {
       console.log(`Player exited with code ${code}`)
-      this.emit('exit', { id: this.id, code, errors: this.errors })
+      this.emit('exit', { id: this.id, code, errors: this.errors, output: this.output })
       this.terminate()
     })
   }
