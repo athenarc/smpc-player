@@ -41,11 +41,13 @@ const handleConnection = (ws) => {
   ws.on('close', (data) => {
     console.log('Connection Closed: ', data)
     player.terminate()
+    player.removeAllListeners()
   })
 
   ws.on('error', (err) => {
     console.log(err)
     player.terminate()
+    player.removeAllListeners()
   })
 
   ws.on('message', (data) => {
