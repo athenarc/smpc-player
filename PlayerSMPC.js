@@ -22,20 +22,25 @@ class Player extends EventEmitter {
     this.compile = null
     this.id = id
     this.errors = []
-    this.mpc = {}
+    this.job = null
+    this.output = ''
   }
 
-  async _compile (mpc) {
-    await mkdir(`${PROGRAMS_PATH}/${mpc.id}`)
-    let program = await readFile(`./templates/${mpc.name}.mpc.mustache`, 'utf8')
+  setJob (job) {
+    this.job = job
+  }
+
+  async _compile (dataInfo) {
+    await mkdir(`${PROGRAMS_PATH}/${this.job.id}`)
+    let program = await readFile(`./templates/${this.job.algorithm}.mpc`, 'utf8')
     let compiled = _.template(program)
-    program = compiled({ dataSize: mpc.dataSize })
-    await writeFile(`${PROGRAMS_PATH}/${mpc.id}/${mpc.id}.mpc`, program)
+    program = compiled({ ...dataInfo })
+    await writeFile(`${PROGRAMS_PATH}/${this.job.id}/${this.job.id}.mpc`, program)
   }
 
-  async compileProgram (mpc) {
+  async compileProgram (dataInfo) {
     try {
-      await this._compile(mpc)
+      await this._compile(dataInfo)
     } catch (e) {
       if (e.code !== 'EEXIST') {
         console.log(e)
@@ -44,8 +49,7 @@ class Player extends EventEmitter {
       }
     }
 
-    this.mpc = { ...mpc }
-    this.compile = spawn(COMPILE_CMD, [`${PROGRAMS_PATH}/${mpc.id}`], { cwd: SCALE, shell: true })
+    this.compile = spawn(COMPILE_CMD, [`${PROGRAMS_PATH}/${this.job.id}`], { cwd: SCALE, shell: true })
 
     this.compile.stdout.on('data', (data) => {})
 
@@ -64,7 +68,7 @@ class Player extends EventEmitter {
   }
 
   run () {
-    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.mpc.id}`, '-f 1'], { cwd: SCALE, shell: true })
+    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.job.id}`, '-f 1'], { cwd: SCALE, shell: true })
 
     this.player.stdout.on('data', (data) => {
       console.log(data.toString())

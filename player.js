@@ -55,7 +55,7 @@ const handleConnection = (ws) => {
     data = unpack(data)
 
     if (data.message === 'compile') {
-      player.compileProgram({ ...data.mpc })
+      player.compileProgram({ ...data.dataInfo })
     }
 
     if (data.message === 'start') {
