@@ -54,6 +54,10 @@ const handleConnection = (ws) => {
     print(`Message: ${data}`)
     data = unpack(data)
 
+    if (data.message === 'job-info') {
+      player.setJob({ ...data.job })
+    }
+
     if (data.message === 'compile') {
       player.compileProgram({ ...data.dataInfo })
     }
