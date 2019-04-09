@@ -59,9 +59,7 @@ class Player extends EventEmitter {
     this.compile.on('exit', (code) => {
       console.log(`Compilation exited with code ${code}`)
       this.emit('compilation-ended', { id: this.id, code, errors: this.errors })
-      this.compile.stdin.pause()
-      this.compile.kill()
-      this.compile = null
+      this.terminateCompilation()
     })
   }
 
@@ -91,18 +89,29 @@ class Player extends EventEmitter {
     })
   }
 
-  terminate () {
+  terminatePlayer () {
     if (this.player) {
+      this.player.removeAllListeners()
       this.player.stdin.pause()
       this.player.kill()
       this.player = null
     }
+  }
 
+  terminateCompilation () {
     if (this.compile) {
+      this.compile.removeAllListeners()
       this.compile.stdin.pause()
       this.compile.kill()
       this.compile = null
     }
+  }
+
+  terminate () {
+    this.terminateCompilation()
+    this.terminatePlayer()
+    this.job = null
+    this.output = ''
   }
 }
 
