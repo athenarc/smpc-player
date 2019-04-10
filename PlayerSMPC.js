@@ -49,7 +49,7 @@ class Player extends EventEmitter {
       }
     }
 
-    this.compile = spawn(COMPILE_CMD, [`${PROGRAMS_PATH}/${this.job.id}`], { cwd: SCALE, shell: true })
+    this.compile = spawn(COMPILE_CMD, [`${PROGRAMS_PATH}/${this.job.id}`], { cwd: SCALE, shell: true, detached: true })
 
     this.compile.stdout.on('data', (data) => {})
 
@@ -68,7 +68,7 @@ class Player extends EventEmitter {
   }
 
   run () {
-    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.job.id}`, '-f 1'], { cwd: SCALE, shell: true })
+    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.job.id}`, '-f 1'], { cwd: SCALE, shell: true, detached: true })
 
     this.player.stdout.on('data', (data) => {
       data = data.toString()
@@ -111,6 +111,9 @@ class Player extends EventEmitter {
     if (this.player) {
       this.player.removeAllListeners()
       this.player.stdin.pause()
+      try {
+        process.kill(-this.player.pid)
+      } catch (e) {}
       this.player.kill()
       this.player = null
     }
@@ -120,6 +123,9 @@ class Player extends EventEmitter {
     if (this.compile) {
       this.compile.removeAllListeners()
       this.compile.stdin.pause()
+      try {
+        process.kill(-this.compile.pid)
+      } catch (e) {}
       this.compile.kill()
       this.compile = null
     }
