@@ -73,11 +73,11 @@ class Player extends EventEmitter {
     this.player.stdout.on('data', (data) => {
       data = data.toString()
       console.log(data)
-      if (data.includes('Opening channel 1')) { // better search message. SCALE should print specilized message
+      if (data.includes('@')) { // @ mean the server is ready and listening for client connections
         this.emit('listen', { id: this.id })
       }
 
-      if (data.includes('OUTPUT START')) {
+      if (data.includes('#')) { // # means output start
         this.bufferOutput = true
       }
 
@@ -85,7 +85,7 @@ class Player extends EventEmitter {
         this.output += data
       }
 
-      if (data.includes('OUTPUT END')) {
+      if (data.includes('$')) { // $ means output end
         this.bufferOutput = false
         this.output += data
       }
