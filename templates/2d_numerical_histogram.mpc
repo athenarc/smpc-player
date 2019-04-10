@@ -110,7 +110,7 @@ def range_body(i):
         add_value = add_value + (cell1 > cells_x) * (j == cells_x - 1) + (cell2 > cells_y) * (k == cells_y - 1) - (cell1 > cells_x) * (j == cells_x - 1) * (cell2 > cells_y) * (k == cells_y - 1)
         histogram[j][k] = histogram[j][k] + add_value
 
-print_ln("OUTPUT START:")
+print_ln("# OUTPUT START:")
 print_ln("%s, %s", min1.reveal(), max1.reveal())
 print_ln("%s, %s", min2.reveal(), max2.reveal())
 
@@ -120,4 +120,4 @@ def range_body(i):
   def range_body(j):
     print_ln("%s, %s, %s", i, j, histogram[i][j].reveal())
 
-print_ln("OUTPUT END")
+print_ln("$ OUTPUT END")

@@ -60,7 +60,7 @@ sum = sint(0)
 sum_addr = program.malloc(1, 's')
 sum.store_in_mem(sum_addr)
 
-print_ln("OUTPUT START:")
+print_ln("# OUTPUT START:")
 
 @for_range(cells_x)
 def range_body(i):
@@ -68,4 +68,4 @@ def range_body(i):
   def range_body2(j):
     print_ln("%s, %s, %s", i, j, histogram[i][j].reveal())
 
-print_ln("OUTPUT END")
+print_ln("$ OUTPUT END")

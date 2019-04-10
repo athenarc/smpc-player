@@ -42,9 +42,13 @@ data = sint.Array(<%= dataSize %>)
 def range_body(i):
   data[i] = masked_data[i] + mask[i]
 
+print_ln("# OUTPUT START:")
+
 @for_range(len(data))
 def range_body(i):
   print_ln("Retrieved data, %s", data[i].reveal())
+
+print_ln("$ OUTPUT END")
 
 close_channel(4)
 close_channel(3)
