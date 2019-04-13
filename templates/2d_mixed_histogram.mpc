@@ -56,6 +56,7 @@ close_channel(4)
 # ======================================================================================
 # --------------------------------------------------------------------------------------
 
+print_ln("COMPUTATION STARTED")
 
 maximum_element_address2 = program.malloc(1, sfix)
 store_in_mem(data_attribute2[0], maximum_element_address2)
