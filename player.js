@@ -29,7 +29,15 @@ if (!process.env.ID) {
   throw new Error('Player ID not defined!')
 }
 
-const wss = new WebSocket.Server({ port: PORT, clientTracking: true })
+const server = https.createServer({
+  ca: fs.readFileSync(process.env.ROOT_CA, { encoding: 'utf-8' }),
+  cert: fs.readFileSync(process.env.PEM_CERT),
+  key: fs.readFileSync(process.env.PEM_KEY),
+  port: PORT,
+  clientTracking: true
+})
+
+const wss = new WebSocket.Server({ server })
 
 console.log(`Player ${process.env.ID} started on port ${PORT}.`)
 
@@ -90,3 +98,5 @@ wss.on('connection', (ws) => {
   print('Connection Accepted!')
   handleConnection(ws)
 })
+
+server.listen(process.env.PORT)
