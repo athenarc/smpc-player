@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  player:
+    container_name: smpc_player
+    image: smpc_player:latest
+    build:
+      context: ./
+    env_file:
+      - .env.production
+    volumes:
+      - ./certs:/smpc-player/certs
+    ports:
+      - 3002:3002
+    networks:
+      - player
+
+networks:
+  player:
+    name: smpc_player
