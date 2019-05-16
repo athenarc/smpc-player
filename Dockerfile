@@ -21,9 +21,6 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install yarn -y
 
-RUN mkdir smpc-player
-COPY . /smpc-player
-
 RUN git clone https://github.com/Athena-MHMD/SCALE-MAMBA.git
 
 WORKDIR /SCALE-MAMBA
@@ -50,6 +47,9 @@ RUN echo 'OSSL = /local/openssl' >> CONFIG.mine
 
 WORKDIR /SCALE-MAMBA/src
 RUN make
+
+RUN mkdir -p smpc-player
+COPY . /smpc-player
 
 WORKDIR /smpc-player
 RUN ./install.sh
