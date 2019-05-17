@@ -31,7 +31,7 @@ class Player extends EventEmitter {
   }
 
   async _compile (dataInfo) {
-    await mkdir(`${PROGRAMS_PATH}/${this.job.id}`)
+    await mkdir(`${PROGRAMS_PATH}/${this.job.id}`, { recursive: true })
     let program = await readFile(`./templates/${this.job.algorithm}.mpc`, 'utf8')
     let compiled = _.template(program)
     program = compiled({ ...dataInfo })

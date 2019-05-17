@@ -48,7 +48,9 @@ RUN echo 'OSSL = /local/openssl' >> CONFIG.mine
 WORKDIR /SCALE-MAMBA/src
 RUN make
 
-RUN mkdir -p smpc-player
+WORKDIR /SCALE-MAMBA
+mkdir -p Programs/dynamic
+
 COPY . /smpc-player
 
 WORKDIR /smpc-player
