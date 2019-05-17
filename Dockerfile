@@ -49,7 +49,7 @@ WORKDIR /SCALE-MAMBA/src
 RUN make
 
 WORKDIR /SCALE-MAMBA
-mkdir -p Programs/dynamic
+RUN mkdir -p Programs/dynamic
 
 COPY . /smpc-player
 
