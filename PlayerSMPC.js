@@ -14,6 +14,7 @@ const SCALE = process.env.SMPC_ENGINE
 const PLAYER_CMD = `${SCALE}/Player.x`
 const COMPILE_CMD = `${SCALE}/compile.py`
 const PROGRAMS_PATH = `${SCALE}/Programs/dynamic`
+const FHE_FACTORIES = process.env.FHE_FACTORIES || 2
 
 class Player extends EventEmitter {
   constructor (id) {
@@ -68,7 +69,7 @@ class Player extends EventEmitter {
   }
 
   run () {
-    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.job.id}`, '-f 1'], { cwd: SCALE, shell: true, detached: true })
+    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.job.id}`, `-f ${FHE_FACTORIES}`], { cwd: SCALE, shell: true, detached: true })
 
     this.player.stdout.on('data', (data) => {
       data = data.toString()
