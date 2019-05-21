@@ -12,7 +12,9 @@ services:
       - ./scale/data:/SCALE-MAMBA/Data
       - ./scale/certs:/SCALE-MAMBA/Cert-Store
     ports:
-      - 3002:3002
+      - ${PORT}:${PORT}
+      - ${SCALE_PORT}:${SCALE_PORT}
+      - ${SCALE_IMPORTER_PORT}:${SCALE_IMPORTER_PORT}
     networks:
       - player
 
