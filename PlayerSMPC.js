@@ -11,7 +11,7 @@ const mkdir = util.promisify(fs.mkdir)
 const writeFile = util.promisify(fs.writeFile)
 
 const SCALE = process.env.SMPC_ENGINE
-const PLAYER_CMD = `${SCALE}/Player.x`
+const PLAYER_CMD = process.env.NODE_ENV === 'development' ? 'fake_scale.sh' : `${SCALE}/Player.x`
 const COMPILE_CMD = `${SCALE}/compile.py`
 const PROGRAMS_PATH = `${SCALE}/Programs/dynamic`
 const FHE_FACTORIES = process.env.FHE_FACTORIES || 2
@@ -69,7 +69,10 @@ class Player extends EventEmitter {
   }
 
   run () {
-    this.player = spawn(PLAYER_CMD, [this.id, `${PROGRAMS_PATH}/${this.job.id}`, `-f ${FHE_FACTORIES}`], { cwd: SCALE, shell: true, detached: true })
+    const args = process.env.NODE_ENV === 'development' ? [`-a ${this.job.algorithm}`] : [this.id, `${PROGRAMS_PATH}/${this.job.id}`, `-f ${FHE_FACTORIES}`]
+    const cwd = process.env.NODE_ENV === 'development' ? __dirname : SCALE
+
+    this.player = spawn(PLAYER_CMD, [...args], { cwd, shell: true, detached: true })
 
     this.player.stdout.on('data', (data) => {
       data = data.toString()
