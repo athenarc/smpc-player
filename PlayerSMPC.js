@@ -112,26 +112,22 @@ class Player extends EventEmitter {
   }
 
   terminatePlayer () {
-    if (this.player) {
-      this.player.removeAllListeners()
-      this.player.stdin.pause()
-      try {
-        process.kill(-this.player.pid)
-      } catch (e) {}
-      this.player.kill()
-      this.player = null
-    }
+    this._terminate(this.player)
   }
 
   terminateCompilation () {
-    if (this.compile) {
-      this.compile.removeAllListeners()
-      this.compile.stdin.pause()
+    this._terminate(this.compile)
+  }
+
+  _terminate (process) {
+    if (this.process) {
+      this.process.removeAllListeners()
+      this.process.stdin.pause()
       try {
-        process.kill(-this.compile.pid)
+        process.kill(-this.process.pid)
       } catch (e) {}
-      this.compile.kill()
-      this.compile = null
+      this.process.kill()
+      this.process = null
     }
   }
 
