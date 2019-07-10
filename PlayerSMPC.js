@@ -3,6 +3,7 @@ const EventEmitter = require('events')
 const fs = require('fs')
 const util = require('util')
 const _ = require('lodash')
+const algorithms = require('./smpc-global/algorithms.json')
 
 const { includeError } = require('./helpers')
 
@@ -32,9 +33,17 @@ class Player extends EventEmitter {
   }
 
   async _compile (dataInfo) {
+    const algorithm = algorithms.find(a => a.name === this.job.algorithm)
+
+    if (!algorithm || !algorithm.template) {
+      throw new Error('Unsupported algorithm')
+    }
+
     await mkdir(`${PROGRAMS_PATH}/${this.job.id}`, { recursive: true })
-    let program = await readFile(`./templates/${this.job.algorithm}.mpc`, 'utf8')
+
+    let program = await readFile(`./templates/${algorithm.template}.mpc`, 'utf8')
     let compiled = _.template(program)
+
     program = compiled({ ...dataInfo })
     await writeFile(`${PROGRAMS_PATH}/${this.job.id}/${this.job.id}.mpc`, program)
   }
