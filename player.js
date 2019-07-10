@@ -83,7 +83,7 @@ const handleConnection = (ws) => {
     }
 
     if (data.message === 'compile') {
-      player.compileProgram({ ...data.dataInfo })
+      player.compileProgram({ ...data.dataInfo, clients: data.job.totalClients })
     }
 
     if (data.message === 'start') {
