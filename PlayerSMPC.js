@@ -69,7 +69,8 @@ class Player extends EventEmitter {
   }
 
   run () {
-    const args = process.env.NODE_ENV === 'development' ? [`-a ${this.job.algorithm}`] : [this.id, `${PROGRAMS_PATH}/${this.job.id}`, `-f ${FHE_FACTORIES}`]
+    const totalClients = this.job.totalClients || 0
+    const args = process.env.NODE_ENV === 'development' ? [`-a ${this.job.algorithm}`] : [this.id, `${PROGRAMS_PATH}/${this.job.id}`, `-f ${FHE_FACTORIES}`, `-clients ${totalClients}`]
     const cwd = process.env.NODE_ENV === 'development' ? __dirname : SCALE
 
     this.player = spawn(PLAYER_CMD, [...args], { cwd, shell: true, detached: true })
