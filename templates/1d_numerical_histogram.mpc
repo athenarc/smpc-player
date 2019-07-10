@@ -51,8 +51,6 @@ close_channel(0)
 # ======================================================================================
 # --------------------------------------------------------------------------------------
 
-print_ln("COMPUTATION STARTED")
-
 maximum_element_address = program.malloc(1, sfix)
 store_in_mem(data[0], maximum_element_address)
 minimum_element_address = program.malloc(1, sfix)
@@ -84,11 +82,13 @@ def range_body(i):
     add_value = add_value + (cell > cells) * (j == cells - 1)
     histogram[j] = histogram[j] + add_value
 
-print_ln("# OUTPUT START:")
+open_channel(500)
+
 print_ln("%s, %s", min.reveal(), max.reveal())
 
 @for_range(cells)
 def range_body(i):
-  print_ln("%s, %s", i, histogram[i].reveal())
+  regint.public_output(i)
+  cint.public_output(histogram[i].reveal())
 
-print_ln("$ OUTPUT END")
+close_channel(500)

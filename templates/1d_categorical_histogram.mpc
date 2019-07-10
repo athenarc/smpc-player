@@ -44,8 +44,6 @@ close_channel(0)
 # ======================================================================================
 # --------------------------------------------------------------------------------------
 
-print_ln("COMPUTATION STARTED")
-
 histogram = sint.Array(cells)
 
 @for_range(n)
@@ -54,10 +52,11 @@ def range_body(i):
   def range_body2(j):
     histogram[j] = histogram[j] + (data[i] == j)
 
-print_ln("# OUTPUT START:")
+open_channel(500)
 
 @for_range(len(histogram))
 def range_body(i):
-  print_ln("%s, %s", i, histogram[i].reveal())
+  regint.public_output(i)
+  cint.public_output(histogram[i].reveal())
 
-print_ln("$ OUTPUT END")
+close_channel(500)

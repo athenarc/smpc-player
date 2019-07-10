@@ -46,8 +46,6 @@ close_channel(0)
 # ======================================================================================
 # --------------------------------------------------------------------------------------
 
-print_ln("COMPUTATION STARTED")
-
 histogram = sint.Matrix(cells_x,cells_y)
 
 @for_range(n / 2)
@@ -62,12 +60,14 @@ sum = sint(0)
 sum_addr = program.malloc(1, 's')
 sum.store_in_mem(sum_addr)
 
-print_ln("# OUTPUT START:")
+open_channel(500)
 
 @for_range(cells_x)
 def range_body(i):
   @for_range(cells_y)
   def range_body2(j):
-    print_ln("%s, %s, %s", i, j, histogram[i][j].reveal())
+    regint.public_output(i)
+    regint.public_output(j)
+    cint.public_output(histogram[i][j].reveal())
 
-print_ln("$ OUTPUT END")
+close_channel(500)
