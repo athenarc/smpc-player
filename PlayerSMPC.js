@@ -130,16 +130,16 @@ class Player extends EventEmitter {
   }
 
   _terminate (process) {
-    if (this.process) {
-      this.process.removeAllListeners()
-      this.process.stdin.pause()
+    if (process) {
+      process.removeAllListeners()
+      process.stdin.pause()
       try {
-        process.kill(-this.process.pid, 'SIGKILL')
+        process.kill(-process.pid, 'SIGKILL')
       } catch (e) {
         console.log(`Cannot kill process: ${e}`)
       }
-      this.process.kill('SIGKILL')
-      this.process = null
+      process.kill('SIGKILL')
+      process = null
     }
   }
 
