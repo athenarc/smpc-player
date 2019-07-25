@@ -134,9 +134,9 @@ class Player extends EventEmitter {
       this.process.removeAllListeners()
       this.process.stdin.pause()
       try {
-        process.kill(-this.process.pid)
+        process.kill(-this.process.pid, 'SIGKILL')
       } catch (e) {}
-      this.process.kill()
+      this.process.kill('SIGKILL')
       this.process = null
     }
   }
