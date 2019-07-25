@@ -3,6 +3,7 @@ const EventEmitter = require('events')
 const fs = require('fs')
 const util = require('util')
 const _ = require('lodash')
+const kill = require('tree-kill')
 const algorithms = require('./smpc-global/algorithms.json')
 
 const { includeError } = require('./helpers')
@@ -133,12 +134,8 @@ class Player extends EventEmitter {
     if (process) {
       process.removeAllListeners()
       process.stdin.pause()
-      try {
-        process.kill(-process.pid, 'SIGKILL')
-      } catch (e) {
-        console.log(`Cannot kill process: ${e}`)
-      }
-      process.kill('SIGKILL')
+      kill(process.pid, 'SIGKILL')
+      // process.kill('SIGKILL')
       process = null
     }
   }
