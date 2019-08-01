@@ -13,7 +13,7 @@ const mkdir = util.promisify(fs.mkdir)
 const writeFile = util.promisify(fs.writeFile)
 
 const SCALE = process.env.SMPC_ENGINE
-const PLAYER_CMD = process.env.NODE_ENV === 'development' ? 'fake_scale.sh' : `${SCALE}/Player.x`
+const PLAYER_CMD = process.env.NODE_ENV === 'development' ? './fake_scale.sh' : `${SCALE}/Player.x`
 const COMPILE_CMD = `${SCALE}/compile.py`
 const PROGRAMS_PATH = `${SCALE}/Programs/dynamic`
 const FHE_FACTORIES = process.env.FHE_FACTORIES || 2
