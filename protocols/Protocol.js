@@ -1,3 +1,5 @@
+const Player = require('../PlayerSMPC')
+
 class Protocol {
   constructor ({ ws }) {
     if (new.target === Protocol) {
@@ -5,7 +7,9 @@ class Protocol {
     }
 
     this.ws = ws
+    this.player = new Player(process.env.ID)
     this._init()
+    this._registerToPlayer()
   }
 
   _init () {
@@ -19,7 +23,33 @@ class Protocol {
     this.ws.on('message', (msg) => this.handleMessage({ ws: this.ws, msg }))
   }
 
+  _registerToPlayer () {
+    this.player.on('compilation-ended', msg => this.handlePlayerCompilationEnd(msg))
+
+    this.player.on('listen', () => this.handlePlayerListen())
+
+    this.player.on('error', msg => this.handlePlayerError(msg))
+
+    this.player.on('exit', msg => this.handlePlayerExit(msg))
+  }
+
   /* Abstract Methods */
+  handlePlayerCompilationEnd (msg) {
+    throw new Error('handlePlayerCompilationEnd: Implementation Missing!')
+  }
+
+  handlePlayerListen () {
+    throw new Error('handlePlayerListen: Implementation Missing!')
+  }
+
+  handlePlayerError (msg) {
+    throw new Error('handlePlayerError: Implementation Missing!')
+  }
+
+  handlePlayerExit (msg) {
+    throw new Error('handlePlayerExit: Implementation Missing!')
+  }
+
   handleOpen ({ ws }) {
     throw new Error('handleOpen: Implementation Missing!')
   }
